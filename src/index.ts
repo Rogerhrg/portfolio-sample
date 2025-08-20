@@ -4,7 +4,7 @@ const app = express()
 
 //Routing
 app.get('/', (req, res) => {
-    res.send('Hola Mundo con TypeScript y Express')
+    res.send('Hola Mundo con TypeScript y Express. Desde compu casa.')
 })
 
 const port = process.env.PORT || 4000
