@@ -12,15 +12,15 @@ export const createAccount = async (req: Request, res: Response) => {
 
     const userExist = await User.findOne({ email })
     if (userExist) {
-        const error = new Error('Usuario ya registrado')
-        return res.status(409).json({ msg: error.message })
+        const error = new Error('Email ya registrado')
+        return res.status(409).json({ error: error.message })
     }
     
     const handle = slug(req.body.handle, '')
     const handleExist = await User.findOne({ handle })
     if (handleExist) {
         const error = new Error('Nombre de usuario no disponible')
-        return res.status(409).json({ msg: error.message })
+        return res.status(409).json({ error: error.message })
     }
 
     const user = new User(req.body)
@@ -38,13 +38,13 @@ export const login = async (req: Request, res: Response) => {
     const user = await User.findOne({ email })
     if (!user) {
         const error = new Error('Usuario no existe')
-        return res.status(404).json({ msg: error.message })
+        return res.status(404).json({ error: error.message })
     }
 
     const isPasswordCorrect = await checkPassword(password, user.password)
     if (!isPasswordCorrect) {
         const error = new Error('Contraseña incorrecta')
-        return res.status(401).json({ msg: error.message })
+        return res.status(401).json({ error: error.message })
     }
     console.log('Autenticado')
 }
