@@ -2,6 +2,7 @@ import { hash } from 'crypto'
 import User from '../models/user'
 import { Request, Response } from 'express'
 import { check, validationResult } from 'express-validator'
+import jwt from 'jsonwebtoken'
 import slug from 'slug'
 import { hashPassword } from '../utils/auth'
 import { checkPassword } from '../utils/auth'
@@ -49,4 +50,8 @@ export const login = async (req: Request, res: Response) => {
     }
     const token = generateJWT({id:user.id})
     res.send(token)
+}
+
+export const getUser = async (req:Request, res:Response) => {
+    res.json(req.user)
 }
