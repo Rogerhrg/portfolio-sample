@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form"
 import ErrorMessage from "../components/ErrorMessage"
 import { useQueryClient } from "@tanstack/react-query"
-import type { User } from "../types"
+import type { ProfileForm, User } from "../types"
 
 
 export default function ProfileView() {
@@ -12,8 +12,8 @@ export default function ProfileView() {
         description: data.description
     }})
     console.log(data)
-    const handleUserProfileForm = () => {
-        console.log('Desde handleUserProfileForm')
+    const handleUserProfileForm = (formData:ProfileForm) => {
+        console.log(formData)
     }
     return (
         <form 

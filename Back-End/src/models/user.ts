@@ -1,7 +1,7 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose, { Document, Schema } from "mongoose";
 import { hasUncaughtExceptionCaptureCallback } from "process";
 
-export interface IUser {
+export interface IUser extends Document {
     handle: string
     name: string
     email: string
