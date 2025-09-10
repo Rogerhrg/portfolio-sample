@@ -1,12 +1,11 @@
-import { hash } from 'crypto'
 import User from '../models/user'
 import { Request, Response } from 'express'
-import { check, validationResult } from 'express-validator'
-import jwt from 'jsonwebtoken'
 import slug from 'slug'
+import formidable from 'formidable'
 import { hashPassword } from '../utils/auth'
 import { checkPassword } from '../utils/auth'
 import { generateJWT } from '../utils/jwt'
+import cloudinary from '../config/cloudinary'
 
 export const createAccount = async (req: Request, res: Response) => {
     
@@ -70,6 +69,19 @@ export const updateProfile = async (req:Request, res:Response) => {
         req.user.handle = handle
         await req.user.save()
         res.send('Perfil actualizado correctamente')
+    } catch (e) {
+        const error = new Error('Hubo un error')
+        return res.status(500).json({error:error.message})
+    }
+}
+
+export const uploadImage = async (req:Request, res:Response) => {
+    const form = formidable({multiples:false})
+    form.parse(req, (error, fields, files) => {
+        console.log(files)
+    })
+    try {
+
     } catch (e) {
         const error = new Error('Hubo un error')
         return res.status(500).json({error:error.message})
