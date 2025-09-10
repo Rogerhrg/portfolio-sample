@@ -1,7 +1,9 @@
 import { useForm } from "react-hook-form"
 import ErrorMessage from "../components/ErrorMessage"
-import { useQueryClient } from "@tanstack/react-query"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 import type { ProfileForm, User } from "../types"
+import { updateProfile} from "../api/WikiTreeAPI"
+import { toast } from "sonner"
 
 
 export default function ProfileView() {
@@ -11,9 +13,20 @@ export default function ProfileView() {
         handle: data.handle,
         description: data.description
     }})
-    console.log(data)
+
+    const updateProfileMutation = useMutation({
+        mutationFn: updateProfile,
+        onError: (error) => {
+            toast.error(error.message)
+        },
+        onSuccess: (data) => {
+            toast.success(data)
+            queryClient.invalidateQueries({queryKey: ['user']})
+        }
+    })
+
     const handleUserProfileForm = (formData:ProfileForm) => {
-        console.log(formData)
+        updateProfileMutation.mutate(formData)
     }
     return (
         <form 
