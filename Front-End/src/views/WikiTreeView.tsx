@@ -1,6 +1,8 @@
 import { useState } from "react"
 import { social } from "../data/social" 
 import WikiTreeInput from "../components/WikiTreeInput"
+import { isValidUrl } from "../utils"
+import { toast } from "sonner"
 
 export default function WikiTreeView() {
   const [wikiTreeLinks, setWikiTreeLinks] = useState(social)
@@ -12,7 +14,16 @@ export default function WikiTreeView() {
   }
 
   const handleEnableLink = (SocialNetwork: string) => {
-    const uptadedLinks = wikiTreeLinks.map(link => link.name === SocialNetwork? {...link, enabled: !link.enabled}: link)
+    const uptadedLinks = wikiTreeLinks.map(link => {
+      if(link.name === SocialNetwork) {
+        if(isValidUrl(link.url)) {
+          return {...link, enabled: !link.enabled}
+        } else {
+          toast.error('URL no válida')
+        }
+      }
+    return link
+    })
     console.log(uptadedLinks)
     setWikiTreeLinks(uptadedLinks)
   }
