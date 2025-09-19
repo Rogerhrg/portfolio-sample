@@ -1,13 +1,19 @@
 import { Link, Outlet } from "react-router-dom";
 import NavigationTabs from "./NavigationTabs";
 import { Toaster } from "sonner";
-import type { User } from "../types";
+import type { SocialNetwork, User } from "../types";
+import { useState } from "react";
 
 type WikiTreeProps = {
     data: User
 }
 
 export default function WikiTree({data}: WikiTreeProps){
+
+    const [enabledLinks, setEnabledLinks] = useState<SocialNetwork[]>(
+        JSON.parse(data.links).filter((item:SocialNetwork) => item.enabled)
+    )
+    console.log(enabledLinks)
 return (
         <>
             <header className="bg-slate-800 py-5">
@@ -48,6 +54,13 @@ return (
                                 <img src={data.image} alt="Imagen de perfil" className='mx-auto max-w-[250px]' />
                             }
                             <p className="text-center text-lg font-black text-white">{data.description}</p>
+                            <div className="mt-20 flex flex-col gap-5">
+                                {enabledLinks.map(link => (
+                                    <p>{link.url}</p>
+                                ))
+
+                                }
+                            </div>
                         </div>
                     </div>
                 </main>
