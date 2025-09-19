@@ -2,7 +2,8 @@ import { Link, Outlet } from "react-router-dom";
 import NavigationTabs from "./NavigationTabs";
 import { Toaster } from "sonner";
 import type { SocialNetwork, User } from "../types";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import WikiTreeLinks from "./WikiTreeLinks";
 
 type WikiTreeProps = {
     data: User
@@ -13,8 +14,12 @@ export default function WikiTree({data}: WikiTreeProps){
     const [enabledLinks, setEnabledLinks] = useState<SocialNetwork[]>(
         JSON.parse(data.links).filter((item:SocialNetwork) => item.enabled)
     )
-    console.log(enabledLinks)
-return (
+
+    useEffect(()=>{
+        setEnabledLinks(JSON.parse(data.links).filter((item:SocialNetwork)=> item.enabled))
+    }, [data])
+
+    return (
         <>
             <header className="bg-slate-800 py-5">
                 <div className="mx-auto max-w-5xl flex flex-col md:flex-row items-center md:justify-between">
@@ -56,7 +61,8 @@ return (
                             <p className="text-center text-lg font-black text-white">{data.description}</p>
                             <div className="mt-20 flex flex-col gap-5">
                                 {enabledLinks.map(link => (
-                                    <p>{link.url}</p>
+                                    <WikiTreeLinks key={link.name} link={link}/>
+
                                 ))
 
                                 }
