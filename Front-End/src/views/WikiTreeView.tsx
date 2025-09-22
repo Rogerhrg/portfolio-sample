@@ -37,21 +37,15 @@ export default function WikiTreeView() {
 
   const handleUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const uptadedLinks = wikiTreeLinks.map(link => link.name === e.target.name? {...link, url:e.target.value}: link)
-    console.log(uptadedLinks)
     setWikiTreeLinks(uptadedLinks)
-
-    queryClient.setQueryData(['user'], (prevData:User) => {
-      return {
-        ...prevData,
-        links: JSON.stringify(uptadedLinks)
-      }
-    })
   }
   
-  
-  const handleEnableLink = (SocialNetwork: string) => {
+  const links: SocialNetwork[] = JSON.parse(user.links)
+
+
+  const handleEnableLink = (socialNetwork: string) => {
     const uptadedLinks = wikiTreeLinks.map(link => {
-      if(link.name === SocialNetwork) {
+      if(link.name === socialNetwork) {
         if(isValidUrl(link.url)) {
           return {...link, enabled: !link.enabled}
         } else {
@@ -61,11 +55,42 @@ export default function WikiTreeView() {
       return link
     })
     setWikiTreeLinks(uptadedLinks)
-    
+
+    let uptadedItems: SocialNetwork[] = []
+
+    const selectedSocialNetwork = uptadedLinks.find(link => link.name === socialNetwork)
+    if(selectedSocialNetwork?.enabled) {
+      const newItem = {
+        ...selectedSocialNetwork,
+        id: links.length + 1
+      }
+      uptadedItems = [...links, newItem]
+    } else {
+      const indexToUpdate = links.findIndex(link=> link.name !== socialNetwork)
+      uptadedItems = links.map(link => {
+        if (link.name === socialNetwork) {
+          return {
+            ...link,
+            id: 0,
+            enabled : false
+            }
+          } else if (link.id > indexToUpdate) {
+              return {
+                ...link, 
+                id : link.id - 1
+              }
+          } else {
+            return link
+          }
+        } 
+      )
+  }
+    console.log(uptadedItems)
+
     queryClient.setQueryData(['user'], (prevData:User) => {
       return {
         ...prevData,
-        links: JSON.stringify(uptadedLinks)
+        links: JSON.stringify(uptadedItems)
       }
     })
 
