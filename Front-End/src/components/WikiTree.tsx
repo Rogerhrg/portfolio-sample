@@ -1,6 +1,8 @@
-import { Link, Outlet } from "react-router-dom";
-import NavigationTabs from "./NavigationTabs";
-import { Toaster } from "sonner";
+import { Link, Outlet } from "react-router-dom"
+import NavigationTabs from "./NavigationTabs"
+import { Toaster } from "sonner"
+import { DndContext, closestCenter, type DragEndEvent } from "@dnd-kit/core"
+import { SortableContext, verticalListSortingStrategy, arrayMove } from "@dnd-kit/sortable"
 import type { SocialNetwork, User } from "../types";
 import { useEffect, useState } from "react";
 import WikiTreeLinks from "./WikiTreeLinks";
@@ -18,6 +20,16 @@ export default function WikiTree({data}: WikiTreeProps){
     useEffect(()=>{
         setEnabledLinks(JSON.parse(data.links).filter((item:SocialNetwork)=> item.enabled))
     }, [data])
+
+    const handleDragEnd = (e: DragEndEvent) => {
+        const { active, over } = e
+        if(over && over.id) {
+            const prevIndex = enabledLinks.findIndex(link => link.id === active.id)
+            const newIndex = enabledLinks.findIndex(link => link.id === over.id)
+            const order = arrayMove(enabledLinks,prevIndex,newIndex)
+            setEnabledLinks(order)
+        }
+    }
 
     return (
         <>
@@ -59,14 +71,21 @@ export default function WikiTree({data}: WikiTreeProps){
                                 <img src={data.image} alt="Imagen de perfil" className='mx-auto max-w-[250px]' />
                             }
                             <p className="text-center text-lg font-black text-white">{data.description}</p>
+                            <DndContext 
+                            collisionDetection={closestCenter}
+                            onDragEnd={handleDragEnd}
+                            >
+                            
                             <div className="mt-20 flex flex-col gap-5">
-                                {enabledLinks.map(link => (
-                                    <WikiTreeLinks key={link.name} link={link}/>
-
-                                ))
-
-                                }
+                                <SortableContext
+                                    items={enabledLinks}
+                                    strategy={verticalListSortingStrategy}>
+                                        {enabledLinks.map(link => (
+                                        <WikiTreeLinks key={link.name} link={link}/>
+                                        ))}
+                                </SortableContext>
                             </div>
+                            </DndContext>
                         </div>
                     </div>
                 </main>
