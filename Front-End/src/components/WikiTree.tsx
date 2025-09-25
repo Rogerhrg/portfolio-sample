@@ -6,6 +6,7 @@ import { SortableContext, verticalListSortingStrategy, arrayMove } from "@dnd-ki
 import type { SocialNetwork, User } from "../types";
 import { useEffect, useState } from "react";
 import WikiTreeLinks from "./WikiTreeLinks";
+import { useQueryClient } from "@tanstack/react-query"
 
 type WikiTreeProps = {
     data: User
@@ -21,6 +22,8 @@ export default function WikiTree({data}: WikiTreeProps){
         setEnabledLinks(JSON.parse(data.links).filter((item:SocialNetwork)=> item.enabled))
     }, [data])
 
+    const queryClient = useQueryClient()
+
     const handleDragEnd = (e: DragEndEvent) => {
         const { active, over } = e
         if(over && over.id) {
@@ -28,6 +31,19 @@ export default function WikiTree({data}: WikiTreeProps){
             const newIndex = enabledLinks.findIndex(link => link.id === over.id)
             const order = arrayMove(enabledLinks,prevIndex,newIndex)
             setEnabledLinks(order)
+
+            const disabledlinks: SocialNetwork[] = JSON.parse(data.links).filter((item:SocialNetwork) => !item.enabled)
+
+            const links = [...disabledlinks,...order]
+
+            queryClient.setQueryData(['user'], (prevData:User) => {
+                return {
+                    ...prevData,
+                    links: JSON.stringify(links)
+                }
+            })
+
+            
         }
     }
 
@@ -55,7 +71,7 @@ export default function WikiTree({data}: WikiTreeProps){
                     <div className="flex justify-end">
                         <Link 
                             className="font-bold text-right text-slate-800 text-2xl"
-                            to={''}
+                            to={`/${data.handle}`}
                             target="_blank"
                             rel="noreferrer noopener"
                         >Visitar Mi Perfil: /{data.handle}</Link>
