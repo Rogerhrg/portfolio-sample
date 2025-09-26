@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query"
 import { Navigate, useParams } from "react-router-dom"
 import { getUserByHandle } from "../api/WikiTreeAPI"
+import HandleData from "../components/HandleData"
 
 export default function HandleView() {
 
@@ -14,9 +15,7 @@ export default function HandleView() {
 
   if (isLoading) return 'Cargando...'
   if (error) return <Navigate to={'/404'} />
-  
-  console.log(data)
-
+  if (data) return <HandleData data={data} />
   return (
     <div>HandleView</div>
   )

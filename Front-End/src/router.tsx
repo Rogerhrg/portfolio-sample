@@ -6,7 +6,7 @@ import AppLayout from './layouts/AppLayout'
 import WikiTreeView from './views/WikiTreeView'
 import ProfileView from './views/ProfileView'
 import NotFoundView from './views/NotFoundView'
-import Handleview from './views/Handleview'
+import HandleView from './views/HandleView'
 
 export default function Router() {
     return (
@@ -23,7 +23,7 @@ export default function Router() {
                 </Route>
 
                 <Route path='/:handle' element= {<AuthLayout />}>
-                    <Route element={<Handleview />} index ={true}/>
+                    <Route element={<HandleView />} index ={true}/>
                 </Route>
 
                 <Route path='404' element= {<AuthLayout />}>
