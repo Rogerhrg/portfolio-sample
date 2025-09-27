@@ -28,7 +28,7 @@ export async function uploadImage(file: File){
   let formData = new FormData()
   formData.append('file',file)
   try {
-    const { data } = await api.post('user/image',formData)
+    const { data } = await api.post('/user/image',formData)
     return data
   } catch (error) {
       if (isAxiosError(error) && error.response) {
@@ -40,6 +40,17 @@ export async function uploadImage(file: File){
 export async function getUserByHandle(handle:string){
     try {
       const {data} = await api<UserHandle>(`/${handle}`)
+      return data
+    } catch (error) {
+      if (isAxiosError(error) && error.response) {
+        throw new Error(error.response.data.error)
+      }
+    }        
+}
+
+export async function searchByHandle(handle:string){
+    try {
+      const{ data } = await api.post<string>('/search',{handle})
       return data
     } catch (error) {
       if (isAxiosError(error) && error.response) {
